@@ -17,7 +17,10 @@ public class BallTracker : MonoBehaviour
     }
 
 	void OnGUI(){
-		GUI.Label (new Rect (8, 30, 240, 80), "Ball Position: " + transform.position);
+		float graph_x = (transform.position.x + 33);
+		float graph_z = (33 - transform.position.z);
+
+		GUI.Label (new Rect (8, 30, 240, 80), "Ball Position: " + graph_x + "," + graph_z);
 		GUI.Label (new Rect (8, 55, 240, 80), "Ball Velocity: " + transform.GetComponent<Rigidbody>().velocity);
 	}
 }

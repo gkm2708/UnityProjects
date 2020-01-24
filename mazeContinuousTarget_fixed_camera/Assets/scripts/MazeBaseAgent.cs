@@ -13,8 +13,6 @@ public class MazeBaseAgent : Agent
 
 	public int[,] Maze;
 
-	public int counter = 0;
-
 	public float y_pos_ball = 0.75f;
 	public float y_pos_goal = 0.51f;
 
@@ -206,8 +204,6 @@ public class MazeBaseAgent : Agent
 
 	void Update()
 	{
-		counter = counter + 1;
-
 		float delta_x = actionX - gameObject.transform.eulerAngles.x;
 		float delta_z = actionZ - gameObject.transform.eulerAngles.z;
 
@@ -237,7 +233,6 @@ public class MazeBaseAgent : Agent
 		GUI.Label (new Rect (200, 5, 240, 160), "Angular Rotation: " + gameObject.transform.eulerAngles);
 		GUI.Label (new Rect (200, 30, 240, 160), "action Received: " + actionX +" "+ actionZ);
 		GUI.Label (new Rect (200, 55, 240, 160), "Angular Velocity: " + m_EulerAngleVelocity);
-		GUI.Label (new Rect (200, 80, 240, 160), "update counter: " + counter);
 	}
 
 
