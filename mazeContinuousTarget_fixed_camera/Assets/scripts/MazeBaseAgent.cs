@@ -102,7 +102,6 @@ public class MazeBaseAgent : Agent
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
 
-		/*
 
 		// first create the base board
 
@@ -118,13 +117,12 @@ public class MazeBaseAgent : Agent
 				// check if array has 0 at a place
 				if (Maze[i,j] == 0){
 					GameObject go = Instantiate (prefab) as GameObject;
-					go.transform.position = new Vector3 (-33.0f +i , 0.55f, -33.0f + j);
+					go.transform.localScale = new Vector3 (1, 5, 1);
+					go.transform.position = new Vector3 (j - 33.0f , 0.55f, 33.0f - i);
 					go.transform.parent = gameObject.transform;
 				}
 			}
 		}
-
-		*/
     }
 
 
@@ -205,17 +203,21 @@ public class MazeBaseAgent : Agent
 	void Update()
 	{
 		float delta_x = actionX - gameObject.transform.eulerAngles.x;
+		float delta_y = 0 - gameObject.transform.eulerAngles.y;
 		float delta_z = actionZ - gameObject.transform.eulerAngles.z;
 
 		if (gameObject.transform.eulerAngles.x > 180) {
 			delta_x = 360 + delta_x;
+		}
+		if (gameObject.transform.eulerAngles.y > 180) {
+			delta_y = 360 + delta_y;
 		}
 		if (gameObject.transform.eulerAngles.z > 180) {
 			delta_z = 360 + delta_z;
 		}
 
 
-		m_EulerAngleVelocity = new Vector3 (10*(delta_x), 0, 10*(delta_z));
+		m_EulerAngleVelocity = new Vector3 (10*(delta_x), 10*(delta_y), 10*(delta_z));
 		m_Rigidbody = gameObject.GetComponent<Rigidbody>();
 
 		Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.deltaTime);
