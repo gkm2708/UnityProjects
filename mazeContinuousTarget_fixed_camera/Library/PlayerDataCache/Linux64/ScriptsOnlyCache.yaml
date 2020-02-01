@@ -68,9 +68,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10844}
     - Class: 114
-      Script: {instanceID: 12684}
+      Script: {instanceID: 12930}
     - Class: 114
-      Script: {instanceID: 12686}
+      Script: {instanceID: 12932}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 135
@@ -1163,4 +1163,4 @@ ScriptsOnlyBuild:
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: /home/gaurav/Documents/UnityProjects/mazeContinuousTarget_fixed_camera/Build/mazeContinuousTarget_fixed_camera_blank_board_2dimact.x86_64
+  playerPath: /home/gaurav/Documents/UnityProjects/mazeContinuousTarget_fixed_camera/Build/mazeContinuousTarget_fixed_camera_full_board.x86_64

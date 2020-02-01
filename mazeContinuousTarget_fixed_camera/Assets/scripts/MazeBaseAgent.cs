@@ -251,8 +251,8 @@ public class MazeBaseAgent : Agent
 		//Ball.GetComponent<Rigidbody>().velocity = new Vector3(vectorAction[2], 0.0f, vectorAction[3]);
 
 		// desired rotation
-		actionZ = vectorAction[0];
-		actionX = vectorAction[1];
+		actionX = vectorAction[0];
+		actionZ = vectorAction[1];
 
 		// current rotation
 		//float current_rot_x = gameObject.transform.eulerAngles.x;

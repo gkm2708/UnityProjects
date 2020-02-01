@@ -1,7 +1,5 @@
 ScriptsOnlyBuild:
   usedScripts:
-    Assembly-CSharp-Editor.dll:
-    - MLAgents.LearningBrainEditor
     Assembly-CSharp.dll:
     - BallTracker
     - GameAcademy
@@ -70,10 +68,12 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10844}
     - Class: 114
-      Script: {instanceID: 12680}
+      Script: {instanceID: 12688}
     - Class: 114
-      Script: {instanceID: 12682}
+      Script: {instanceID: 12690}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 134
       Script: {instanceID: 0}
     - Class: 135
       Script: {instanceID: 0}
@@ -1038,7 +1038,7 @@ ScriptsOnlyBuild:
     className: CameraFollow
   - hash:
       serializedVersion: 2
-      Hash: 1004c752cbde4be879c8f012f83a3971
+      Hash: e1a566657255177d2143e76822146165
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MazeBaseAgent
@@ -1165,4 +1165,4 @@ ScriptsOnlyBuild:
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: /homes/gkumar/Documents/UnityProjects/mazeContinuousTarget_fixed_camera_data_collection/Build/mazeContinuousTarget_fixed_camera_data_collection.x86_64
+  playerPath: /home/gaurav/Documents/UnityProjects/mazeContinuousTarget_fixed_camera_data_collection/Build/data_collection_y.x86_64
