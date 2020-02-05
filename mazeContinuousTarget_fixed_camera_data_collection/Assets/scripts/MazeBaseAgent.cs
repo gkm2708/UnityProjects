@@ -8,30 +8,28 @@ public class MazeBaseAgent : Agent
     // Start is called before the first frame update
 	public GameObject Ball;
 	public GameObject Goal;
-	//public Transform Target;
-
-	//Physics.gravity = Vector3(0, -1.0, 0);
-
-	private float desired_physics_update = 1.0f;
-
-	private int[,] Maze;
-
-	private float y_pos_ball = 0.75f;
-	private float y_pos_goal = 0.51f;
-
-	private float actionX;
-	private float actionZ;
 
 	private GameObject wall;
 	private GameObject temp; 
 
-	private Rigidbody m_Rigidbody;
-	private Vector3 m_EulerAngleVelocity;
-
 	private colider script; // this will be the container of the script
+
+	private int[,] Maze;
+
+	private float y_pos_ball = 0.01f;
+	private float y_pos_goal = 0.6f;
+
+	private float actionX;
+	private float actionZ;
+
+	private Rigidbody m_Rigidbody;
+
 
 	private Vector3 integrator;
 	private Vector3 error;
+	private Vector3 force;
+	private Vector3 forceClipped;
+	private Vector3 finalMove;
 
 	private float maxForce_x = 0.0f;
 	private float maxForce_z = 0.0f;
@@ -150,30 +148,47 @@ public class MazeBaseAgent : Agent
 		int ball_y = 0;
 
 		// Random ball position in feasible space
-		ball_x = UnityEngine.Random.Range(1, 67);
-		ball_y = UnityEngine.Random.Range(1, 67);
+		ball_x = UnityEngine.Random.Range(0, 50);
+		ball_y = UnityEngine.Random.Range(0, 50);
 
-		while (Maze [ball_x, ball_y] == 0) {
-			ball_x = UnityEngine.Random.Range(1, 67);
-			ball_y = UnityEngine.Random.Range(1, 67);
-		}
+		//while (Maze [ball_x, ball_y] == 0) {
+		//	ball_x = UnityEngine.Random.Range(1, 50);
+		//	ball_y = UnityEngine.Random.Range(1, 50);
+		//}
 
-		//Ball.transform.position = new Vector3 (-33.0f + ball_x, y_pos_ball, -33.0f + ball_y);
-		Ball.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+
+		Debug.Log (ball_x);
+		Debug.Log (ball_y);
+		Debug.Log (-0.25f + (float)ball_x/100);
+		Debug.Log (y_pos_ball);
+		Debug.Log (-0.25f + (float)ball_y/100);
+
+
+		//Ball.transform.position = new Vector3 (-0.25f + (float)ball_x/100, (float)y_pos_ball, -0.25f + (float)ball_y/100);
+		//Ball.transform.position = new Vector3 (0.0f, 0.01f, 0.24f);
+		Ball.transform.position = new Vector3 (0.0f, (float)y_pos_ball, 0.0f);
+
+
 		Ball.GetComponent<Rigidbody>().AddForce(0, 0, 0);
 		Ball.GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 0.0f, 0.0f);
 
 		// Random ball position in feasible space
-		ball_x = UnityEngine.Random.Range(1, 67);
-		ball_y = UnityEngine.Random.Range(1, 67);
+		ball_x = UnityEngine.Random.Range(0, 50);
+		ball_y = UnityEngine.Random.Range(0, 50);
 
-		while (Maze[ball_x, ball_y] == 0) {
-			ball_x = UnityEngine.Random.Range(1, 67);
-			ball_y = UnityEngine.Random.Range(1, 67);
-		}
+		//while (Maze[ball_x, ball_y] == 0) {
+		//	ball_x = UnityEngine.Random.Range(1, 50);
+		//	ball_y = UnityEngine.Random.Range(1, 50);
+		//}
 
-		Goal.transform.position = new Vector3 (-33.0f + ball_x, y_pos_goal, -33.0f + ball_y);
-		Goal.transform.parent = gameObject.transform;
+		Debug.Log (ball_x);
+		Debug.Log (ball_y);
+		Debug.Log (-0.25f + (float)ball_x/100);
+		Debug.Log (y_pos_goal);
+		Debug.Log (-0.25f + (float)ball_y/100);
+
+		Goal.transform.position = new Vector3 (-0.25f + (float)ball_x/100, (float)y_pos_goal, -0.25f + (float)ball_y/100);
+		//Goal.transform.parent = gameObject.transform;
 
 		gameObject.transform.position = new Vector3 (0, 0, 0);
 		gameObject.transform.rotation = new Quaternion (0.0f, 0.0f, 0.0f, 1);
@@ -189,17 +204,22 @@ public class MazeBaseAgent : Agent
 
 	public override void CollectObservations(){
 
-		AddVectorObs (gameObject.transform.rotation.x);
-		AddVectorObs (gameObject.transform.rotation.z);
+		//AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.x,0));
+		//AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.z,0));
+
+		AddVectorObs (forceClipped.x);
+		AddVectorObs (forceClipped.z);
 
 		AddVectorObs (Ball.transform.position.x);
 		AddVectorObs (Ball.transform.position.z);
 
-		AddVectorObs (Goal.transform.position.x);
-		AddVectorObs (Goal.transform.position.z);
+		AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.x,0));
+		AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.z,0));
 
 		AddVectorObs (Ball.GetComponent<Rigidbody>().velocity.x);
 		AddVectorObs (Ball.GetComponent<Rigidbody>().velocity.z);
+
+		AddVectorObs (Time.deltaTime);
 
 	}
 
@@ -207,15 +227,25 @@ public class MazeBaseAgent : Agent
 
 	void Update()
 	{
-		maxForce_x = Mathf.Atan(1.0f/Ball.transform.position.x);
-		maxForce_z = Mathf.Atan(1.0f/Ball.transform.position.z);
+		maxForce_x = Mathf.Abs(Mathf.Atan(0.2f/Ball.transform.position.x));
+		maxForce_z = Mathf.Abs(Mathf.Atan(0.2f/Ball.transform.position.z));
+
+		//maxForce_x = Mathf.Abs(Mathf.Atan(0.2f/Ball.transform.position.x));
+		//maxForce_z = Mathf.Abs(Mathf.Atan(0.2f/Ball.transform.position.z));
+
 
 		float delta_x = 0;
 		float delta_z = 0;
 
-		float pGain = 0.001f; // the proportional gain
-		float iGain = 0.005f; // the integral gain
-		float dGain = 0.005f; // differential gain
+		//float pGain = 0.1f; // the proportional gain
+		//float iGain = 0.01f; // the integral gain
+		//float dGain = 0.005f; // differential gain
+
+		float pGain = 0.5f; // the proportional gain
+		float iGain = 0.001f; // the integral gain
+		float dGain = 0.0001f; // differential gain
+
+
 
 		delta_x = Mathf.DeltaAngle (gameObject.transform.eulerAngles.x, actionX);
 		float delta_y = Mathf.DeltaAngle (gameObject.transform.eulerAngles.y, 0);
@@ -249,15 +279,21 @@ public class MazeBaseAgent : Agent
 		Vector3 diff = error/ Time.deltaTime; // differentiate error
 
 		// calculate the force summing the 3 errors with respective gains:
-		Vector3 force = error * pGain + integrator * iGain + diff * dGain;
+		force = error * pGain + integrator * iGain + diff * dGain;
 
 		// clamp the force to the max value available
 		//force = Vector3.ClampMagnitude(force, maxForce);
 
-		Vector3 finalMove = new Vector3(
-			gameObject.transform.eulerAngles.x + Mathf.Clamp(force.x, -1*maxForce_z, maxForce_z), 
-			gameObject.transform.eulerAngles.y + force.y,
-			gameObject.transform.eulerAngles.z + Mathf.Clamp(force.z, -1*maxForce_x, maxForce_x)); 
+		forceClipped = new Vector3(Mathf.Clamp(force.x, -1*maxForce_z, maxForce_z), 
+									force.y,
+									Mathf.Clamp(force.z, -1*maxForce_x, maxForce_x)); 
+
+
+
+		finalMove = new Vector3(
+			gameObject.transform.eulerAngles.x + forceClipped.x, 
+			gameObject.transform.eulerAngles.y + forceClipped.y,
+			gameObject.transform.eulerAngles.z + forceClipped.z); 
 
 
 		// apply the force to accelerate the rigidbody:
@@ -274,10 +310,13 @@ public class MazeBaseAgent : Agent
 
 
 	void OnGUI() {
-		GUI.Label (new Rect (200, 5, 240, 160), "Angular Rotation: " + gameObject.transform.eulerAngles);
-		GUI.Label (new Rect (200, 30, 240, 160), "action Received: " + actionX +" "+ actionZ);
-		GUI.Label (new Rect (200, 55, 240, 160), "Angular Velocity: " + m_EulerAngleVelocity);
-		GUI.Label (new Rect (200, 80, 240, 160), "Rotation limit: " + maxForce_x + " " + maxForce_z);
+		GUI.Label (new Rect (200, 2, 240, 160), "Angular Rotation: " + gameObject.transform.eulerAngles);
+		GUI.Label (new Rect (200, 16, 240, 160), "action Received: " + actionX +" "+ actionZ);
+		GUI.Label (new Rect (200, 30, 240, 160), "Rotation limit: " + maxForce_x + " " + maxForce_z);
+		GUI.Label (new Rect (200, 44, 240, 160), "Error: " + error);
+		GUI.Label (new Rect (200, 58, 240, 160), "Force: " + force);
+		GUI.Label (new Rect (200, 72, 240, 160), "Final Move: " + finalMove);
+
 	}
 
 
@@ -288,6 +327,8 @@ public class MazeBaseAgent : Agent
 
 
 	public override void AgentAction(float[] vectorAction, string textAction){
+
+		integrator = new Vector3 (0.0f, 0.0f, 0.0f);
 
 		Vector3 BallTransform = Ball.transform.position;
 
@@ -308,12 +349,12 @@ public class MazeBaseAgent : Agent
 
 		float distanceToTarget = Vector3.Distance (Ball.transform.position, Goal.transform.position);
 
-		if (distanceToTarget < 0.5f) {
+		if (distanceToTarget < 0.005f) {
 			SetReward (0.0f);
 			Done ();
-		} else if (BallTransform.y - gameObject.transform.position.y < -20f ||
-			Mathf.Abs (BallTransform.x - gameObject.transform.position.x) > 33.5f ||
-			Mathf.Abs (BallTransform.z - gameObject.transform.position.z) > 33.5f) {
+		} else if (BallTransform.y - gameObject.transform.position.y < -2f ||
+			Mathf.Abs (BallTransform.x - gameObject.transform.position.x) > 0.25f ||
+			Mathf.Abs (BallTransform.z - gameObject.transform.position.z) > 0.25f) {
 			SetReward (-11.0f);
 			Done ();
 		}
