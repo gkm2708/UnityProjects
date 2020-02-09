@@ -1165,4 +1165,4 @@ ScriptsOnlyBuild:
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: /home/gaurav/Documents/UnityProjects/mazeContinuousTarget_fixed_camera_data_collection/Build/data_collection_y.x86_64
+  playerPath: /vol/speech/gaurav/UnityProjects/mazeContinuousTarget_fixed_camera_data_collection/Build/blank_board.x86_64

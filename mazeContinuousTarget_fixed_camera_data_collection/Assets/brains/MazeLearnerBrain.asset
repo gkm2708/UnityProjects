@@ -13,18 +13,16 @@ MonoBehaviour:
   m_Name: MazeLearnerBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 9
-    numStackedVectorObservations: 1
-    vectorActionSize: 04000000
+    vectorObservationSize: 6
+    numStackedVectorObservations: 4
+    vectorActionSize: 02000000
     cameraResolutions:
-    - width: 670
-      height: 670
+    - width: 50
+      height: 50
       blackAndWhite: 1
     vectorActionDescriptions:
     - alpha_dot
     - beta_dot
-    - x_dot
-    - y_dot
     vectorActionSpaceType: 1
   model: {fileID: 0}
   inferenceDevice: 0

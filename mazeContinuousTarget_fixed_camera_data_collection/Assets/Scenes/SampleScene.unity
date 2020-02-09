@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.43667555, g: 0.4842717, b: 0.56452394, a: 1}
+  m_IndirectSpecularColor: {r: 0.43667564, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -342,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 531658797}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.2, y: 0.51, z: 0.2}
-  m_LocalScale: {x: 0.02, y: 0.001, z: 0.02}
+  m_LocalScale: {x: 0.02, y: 0.01, z: 0.02}
   m_Children: []
   m_Father: {fileID: 1327900266}
   m_RootOrder: 1
@@ -678,14 +678,14 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 85d5281c6c990d427a0165c6cda2f2bc, type: 2}
   maxSteps: 50000
   trainingConfiguration:
-    width: 670
-    height: 670
+    width: 500
+    height: 500
     qualityLevel: 0
     timeScale: 1
     targetFrameRate: -1
   inferenceConfiguration:
-    width: 670
-    height: 670
+    width: 500
+    height: 500
     qualityLevel: 5
     timeScale: 1
     targetFrameRate: 1

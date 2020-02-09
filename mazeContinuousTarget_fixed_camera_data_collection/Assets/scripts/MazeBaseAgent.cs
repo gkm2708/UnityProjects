@@ -17,7 +17,7 @@ public class MazeBaseAgent : Agent
 	private int[,] Maze;
 
 	private float y_pos_ball = 0.01f;
-	private float y_pos_goal = 0.6f;
+	private float y_pos_goal = 0.01f;
 
 	private float actionX;
 	private float actionZ;
@@ -156,17 +156,18 @@ public class MazeBaseAgent : Agent
 		//	ball_y = UnityEngine.Random.Range(1, 50);
 		//}
 
-
+		/*
 		Debug.Log (ball_x);
 		Debug.Log (ball_y);
 		Debug.Log (-0.25f + (float)ball_x/100);
 		Debug.Log (y_pos_ball);
 		Debug.Log (-0.25f + (float)ball_y/100);
+		*/
 
 
-		//Ball.transform.position = new Vector3 (-0.25f + (float)ball_x/100, (float)y_pos_ball, -0.25f + (float)ball_y/100);
+		Ball.transform.position = new Vector3 (-0.25f + (float)ball_x/100, (float)y_pos_ball, -0.25f + (float)ball_y/100);
 		//Ball.transform.position = new Vector3 (0.0f, 0.01f, 0.24f);
-		Ball.transform.position = new Vector3 (0.0f, (float)y_pos_ball, 0.0f);
+		//Ball.transform.position = new Vector3 (0.0f, (float)y_pos_ball, 0.0f);
 
 
 		Ball.GetComponent<Rigidbody>().AddForce(0, 0, 0);
@@ -180,15 +181,17 @@ public class MazeBaseAgent : Agent
 		//	ball_x = UnityEngine.Random.Range(1, 50);
 		//	ball_y = UnityEngine.Random.Range(1, 50);
 		//}
-
+		/*
 		Debug.Log (ball_x);
 		Debug.Log (ball_y);
 		Debug.Log (-0.25f + (float)ball_x/100);
 		Debug.Log (y_pos_goal);
 		Debug.Log (-0.25f + (float)ball_y/100);
+		*/
 
 		Goal.transform.position = new Vector3 (-0.25f + (float)ball_x/100, (float)y_pos_goal, -0.25f + (float)ball_y/100);
 		//Goal.transform.parent = gameObject.transform;
+		//Goal.transform.position = new Vector3 (0.0f, 0.01f, 0.24f);
 
 		gameObject.transform.position = new Vector3 (0, 0, 0);
 		gameObject.transform.rotation = new Quaternion (0.0f, 0.0f, 0.0f, 1);
@@ -207,6 +210,7 @@ public class MazeBaseAgent : Agent
 		//AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.x,0));
 		//AddVectorObs (Mathf.DeltaAngle(gameObject.transform.eulerAngles.z,0));
 
+		/*
 		AddVectorObs (forceClipped.x);
 		AddVectorObs (forceClipped.z);
 
@@ -220,6 +224,22 @@ public class MazeBaseAgent : Agent
 		AddVectorObs (Ball.GetComponent<Rigidbody>().velocity.z);
 
 		AddVectorObs (Time.deltaTime);
+		*/
+
+
+		AddVectorObs (Mathf.DeltaAngle (gameObject.transform.eulerAngles.x, 0.0f));
+		AddVectorObs (Mathf.DeltaAngle (gameObject.transform.eulerAngles.z, 0.0f));
+
+		AddVectorObs (Ball.transform.position.x);
+		AddVectorObs (Ball.transform.position.z);
+
+		AddVectorObs (Goal.transform.position.x);
+		AddVectorObs (Goal.transform.position.z);
+
+		//Debug.Log (gameObject.transform.eulerAngles.x+", "+gameObject.transform.eulerAngles.z+", "
+		//			+Ball.transform.position.x+", "+Ball.transform.position.z+", "
+		//			+Goal.transform.position.x+", "+Goal.transform.position.z);
+
 
 	}
 
@@ -349,7 +369,9 @@ public class MazeBaseAgent : Agent
 
 		float distanceToTarget = Vector3.Distance (Ball.transform.position, Goal.transform.position);
 
-		if (distanceToTarget < 0.005f) {
+		//Debug.Log (distanceToTarget);
+
+		if (distanceToTarget < 0.02f) {
 			SetReward (0.0f);
 			Done ();
 		} else if (BallTransform.y - gameObject.transform.position.y < -2f ||
@@ -360,96 +382,3 @@ public class MazeBaseAgent : Agent
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-/*
-
-	public override void AgentAction(float[] vectorAction, string textAction){
-
-		//Vector3 BallTransform = Ball.transform.position;
-		//Ball.GetComponent<Rigidbody>().AddForce(vectorAction[2], 0, vectorAction[3]);
-		//Ball.GetComponent<Rigidbody>().velocity = new Vector3(vectorAction[2], 0.0f, vectorAction[3]);
-
-		//Debug.Log (actionZ);
-		//Debug.Log (actionX);
-
-
-		// desired rotation
-		var actionZ = vectorAction[0];
-		var actionX = vectorAction[1];
-
-
-		// current rotation
-		float current_rot_x = gameObject.transform.rotation.x;
-		float current_rot_z = gameObject.transform.rotation.z;
-
-
-		// delta rotation
-		delta_rot_x = actionX - current_rot_x;
-		delta_rot_z = actionZ - current_rot_z;
-
-
-
-		//gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(delta_rot_x/10, 0.0f, delta_rot_z/10);
-
-		//var actionZ = 2f * Mathf.Clamp(vectorAction[0], -1f, 1f);
-		//var actionX = 2f * Mathf.Clamp(vectorAction[1], -1f, 1f);
-
-		if ((gameObject.transform.rotation.x < 0.25f && actionX > 0f) ||
-			(gameObject.transform.rotation.x > -0.25f && actionX < 0f)) {
-
-			//gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(delta_rot_x/10, 0.0f, 0.0f);
-			gameObject.transform.Rotate(new Vector3(1, 0, 0), actionX);
-		}
-
-		if ((gameObject.transform.rotation.z < 0.25f && actionZ > 0f) ||
-			(gameObject.transform.rotation.z > -0.25f && actionZ < 0f)) {
-
-			gameObject.transform.Rotate(new Vector3(0, 0, 1), actionZ);
-		}
-
-
-		//Debug.Log (gameObject.transform.rotation);
-
-		// moving ball to next position
-		int x_pos = (int)(-36.0f + vectorAction[0]); 
-		int y_pos = (int)(36.0f - vectorAction[1]);
-
-		//Debug.Log (x_pos);
-		//Debug.Log (y_pos);
-
-		if (distanceToTarget < 0.5f) {
-			SetReward (0.0f);
-			Done ();
-		} else if (BallTransform.y - gameObject.transform.position.y < -20f ||
-			Mathf.Abs (BallTransform.x - gameObject.transform.position.x) > 33.5f ||
-			Mathf.Abs (BallTransform.z - gameObject.transform.position.z) > 33.5f) {
-			SetReward (-11.0f);
-			Done ();
-		} else {
-			bool found = false;
-			for (int i = 0; i < this.transform.childCount; i++) {
-				if (this.transform.GetChild (i).gameObject.tag == "wall") {
-					script = this.transform.GetChild (i).gameObject.GetComponent<colider> ();
-					if (script.stat == true) {
-						SetReward (-11.0f);
-						found = true;
-						script.stat = false;
-					}
-				}
-			}
-			if (found == false) {
-				SetReward (-10.0f);
-			}
-		}
-	}
-	*/
-
-
